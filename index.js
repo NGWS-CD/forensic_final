@@ -35,36 +35,6 @@ class WebForensic {
     
     console.log('[WebForensic] 감지 중지');
   }
-
-  // DOM 변경 기록 조회
-  getDOMRecords() {
-    return this.domTracker.getRecords();
-  }
-
-  // 네트워크 요청 기록 조회
-  getNetworkRecords() {
-    return this.networkTracker.getRecords();
-  }
-
-  // 의심 활동 기록 조회
-  getSuspiciousRecords() {
-    return this.suspiciousTracker.getSuspiciousRecords();
-  }
-
-  // 모든 기록 조회
-  getAllRecords() {
-    return {
-      dom: this.getDOMRecords(),
-      network: this.getNetworkRecords(),
-      suspicious: this.getSuspiciousRecords()
-    };
-  }
-
-  // Puppeteer 페이지에 감지 설정
-  async setupPuppeteer(page) {
-    await this.networkTracker.setupPuppeteerInterception(page);
-    console.log('[WebForensic] Puppeteer 감지 설정 완료');
-  }
 }
 
 // 전역 객체로 노출

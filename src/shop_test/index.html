@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com/css?family=GangwonEduAll&display=swap" rel="stylesheet" />
+    <link href="./css/main.css" rel="stylesheet" />
+    <title>fofo SHOP</title>
+</head>
+<body>
+    <header>
+        <div class="header"></div>
+        <p class="text1">오늘까지 70% 할인!</p>
+        <h1 class="title1">fofo SHOP</h1>
+    </header>
+
+    <main class="main">
+        <h2 class="title2">ORDER FORM</h2>
+
+        <form class="main2">
+            <hr class="bar" />
+
+            <section>
+                <h3 class="title3" style="top: 0px;">주문 정보</h3>
+                <div class="box">
+                    <label for="username1" class="text2">주문자</label>
+                    <input type="text" id="username1" class="input" />
+                </div>
+                <div class="box">
+                    <label for="email" class="text2">이메일</label>
+                    <input type="text" id="email" class="input" style="width: 340px;" />
+                    <span class="text2" style="left: 80px; font-size: 10px;">@</span>
+                    <input type="text" id="email" class="input" style="width: 352px;"/>
+                </div>
+                <div class="box">
+                    <label for="phone1" class="text2">휴대전화</label>
+                    <input type="tel" id="phone1" class="input" style="left: 67px;"/>
+                <div class="box">
+                    <label class="text2">주소</label>
+                    <input placeholder="우편번호" class="input" />
+                    <input placeholder="기본 주소" class="input" style="margin-top: 10px; left: 113px;"/>
+                    <input placeholder="세부 주소 (선택)" class="input" style="margin-top: 10px; left: 113px;"/>
+                </div>
+            </section>
+
+            <hr class="line" />
+
+            <section>
+                <h3 class="title3">배송지</h3>
+                <div style="height: 10px;"></div>
+                <div class="box">
+                    <label for="username2" class="text2">받는사람</label>
+                    <input type="text" id="username2" class="input" style="left: 67px;"/>
+                </div>
+                <div class="box">
+                    <label for="want" class="text2">요청사항</label>
+                    <input type="text" id="want" class="input" style="left: 67px;"/>
+                </div>
+                <div class="box">
+                    <label for="phone2" class="text2">휴대전화</label>
+                    <input type="tel" id="phone2" class="input" style="left: 67px;"/>
+                <div class="box">
+                    <label class="text2">주소</label>
+                    <input placeholder="우편번호" class="input" />
+                    <input placeholder="기본 주소" class="input" style="margin-top: 10px; left: 113px;"/>
+                    <input placeholder="세부 주소 (선택)" class="input" style="margin-top: 10px; left: 113px;"/>
+                </div>
+            </section>
+
+            <hr class="line" />
+
+            <section>
+                <h3 class="title3">주문 상품</h3>
+                <span class="photo" style="display: inline-block;"></span>
+                <div style="display: inline-block; margin-left: 10px; position: relative; top: -60px;">
+                    <span class="text2" >
+                       독거미 F99 기계식 키보드 AULA 타란튤라 무선 블루투스 게이밍 RGB 제조사축 블루퍼플
+                     </span>
+                    <p class="text3">옵션 : 리퍼축 | 수량 : 1개</p>
+                    <span class="text2" style="text-align: right;">44,000원</span>
+                </div>
+            </section>
+
+            <hr class="line" />
+
+            <section>
+                <h3 class="title3">결제 정보</h3>
+                <div style="height: 10px;"></div>
+                <div class="box">
+                    <label for="pointInput" class="text2">포인트</label>
+                    <input type="text" id="pointInput" class="input" placeholder="보유 포인트" style="width: 200px;" readonly />
+                    <button onclick="checkPoint()" class="button"><span class="text2" style="left: 0px;">조회</span></button>
+                </div>
+                <div class="box">
+                    <label for="usepoint"class="text2">사용액</label>
+                    <input type="tel" id="usepoint" class="input" style="width: 250px;"/>
+                </div>
+                <table class="box">
+                    <tr>
+                        <td class="text2">주문상품</td>
+                        <td class="text2">44,000원</td>
+                    </tr>
+                    <tr>
+                        <td class="text2">배송비</td>
+                        <td class="text2">2,500원</td>
+                    </tr>
+                    <tr>
+                        <td class="text2">할인</td>
+                        <td class="text2 discount">0원</td>
+                    </tr>
+                    <tr>
+                        <td class="title3" style="left: 20px;">최종 결제 금액</td>
+                        <td class="title3 final"style="left: 20px;">46,500원</td>
+                    </tr>
+                </table>
+
+            </section>
+
+            <hr class="line" />
+
+            <section>
+                <h3 class="title3">결제 수단</h3>
+                <div style="height: 10px;"></div>
+                <div class="box">
+                    <label for="cardnum" class="text2">카드번호</label>
+                    <input type="tel" id="cardnum" class="input" style="left: 67px;"/>
+                </div>
+                <div class="box">
+                    <label for="mmyy" class="text2">유효기간</label>
+                    <input type="tel" id="mmyy" class="input" style="left: 67px; width: 300px;"/>
+                    <label for="cvc" class="text2" style="left: 90px;">CVC</label>
+                    <input type="tel" id="cvc" class="input" style="left: 100px; width: 330px;"/>
+                </div>
+            </section>
+            
+            <label class="title3" style="width: 500px;">
+                <input type="checkbox" id="agree" name="agree">
+                개인정보 수집 및 이용 동의
+            </label>
+            <button type="submit" id="payButton" class="submit" style="font-family: Freesentation-7Bold; font-size: 32px; color: rgb(255, 255, 255);">
+                46,500원 결제하기</button>
+        </form>
+    </main>
+</body>
+</html>
+<script>
+    function checkPoint() {
+        event.preventDefault();
+        const randomPoint = Math.floor(Math.random() * (6000 - 100 + 1)) + 100;
+        document.getElementById('pointInput').value = randomPoint + ' P';
+    }
+
+    const orderPrice = 44000;
+    const deliveryFee = 2500;
+
+    const usepointInput = document.getElementById("usepoint");
+    const discountField = document.querySelector("td.discount");
+    const finalField = document.querySelector("td.final");
+    const payButton = document.getElementById("payButton");
+
+    usepointInput.addEventListener("input", () => {
+    let used = parseInt(usepointInput.value) || 0;
+
+    let maxDiscount = orderPrice + deliveryFee;
+    if (used > maxDiscount) used = maxDiscount;
+
+    const finalPrice = orderPrice + deliveryFee - used;
+
+    discountField.textContent = used.toLocaleString() + "원";
+    finalField.textContent = finalPrice.toLocaleString() + "원";
+    payButton.textContent = finalPrice.toLocaleString() + "원 결제하기";
+    });
+</script>

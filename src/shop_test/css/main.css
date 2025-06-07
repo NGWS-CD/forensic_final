@@ -1,0 +1,196 @@
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Freesentation-5Medium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-5Medium.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Freesentation-7Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-7Bold.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+body {
+  font-size: 14px;
+}
+
+.header {
+  width: 100%;
+  height: 50px;
+  background: rgba(223,228,241,1);
+  opacity: 1;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+}
+.main {
+  width: 100%;
+  height: 2439px;
+  background: rgb(255, 255, 255);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 139px;
+  left: 0px;
+  overflow: hidden;
+}
+
+.main2 {
+  width: 892px;
+  height: 1645px;
+  background: rgba(255,255,255,1);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: absolute;
+  top: 70px;
+  left: 274px;
+  overflow: hidden;
+  border: 0.5px solid rgba(77,77,77,1);
+}
+
+.bar {
+  width: 891px;
+  height: 19px;
+  background: rgba(244,244,244,1);
+  position: relative;
+  margin: 0px;
+}
+.submit {
+  width: 892px;
+  height: 75px;
+  background: rgba(126,147,200,1);
+  position: absolute;
+  top: 1570px;
+  left: 0px;
+  overflow: hidden;
+}
+.box {
+  margin: 10px;
+}
+.box td {
+  white-space: nowrap;
+}
+.box td:last-child {
+  padding-left: 600px;
+  text-align: right;
+}
+
+.text1 {
+  width: 276px;
+  color: rgba(98,98,98,1);
+  position: absolute;
+  top: 7px;
+  left: 575px;
+  font-family: Freesentation-5Medium;
+  font-size: 18px;
+  text-align: center;
+  margin: 7px;
+}
+.text2 {
+  width: 69px;
+  color: rgba(62,62,62,1);
+  position: relative;
+  left: 20px;
+  font-family: Freesentation-5Medium;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+.text3 {
+  width: 410px;
+  color: rgba(157,157,157,1);
+  position: relative;
+  top: 0px;
+  left: 20px;
+  font-family: Freesentation-5Medium;
+  font-size: 16px;
+  opacity: 1;
+  text-align: left;
+}
+
+.title1 {
+  width: 276px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 62px;
+  left: 582px;
+  font-family: GangwonEduAll;
+  font-weight: Bold;
+  font-size: 40px;
+  opacity: 1;
+  text-align: center;
+}
+.title2 {
+  width: 245px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  left: 281px;
+  font-family: GangwonEduAll;
+  font-weight: Light;
+  font-size: 32px;
+  opacity: 1;
+  text-align: left;
+}
+.title3 {
+  width: 112px;
+  color: rgba(0,0,0,1);
+  position: relative;
+  top: 20px;
+  left: 0px;
+  font-family: Freesentation-7Bold;
+  font-size: 24px;
+  opacity: 1;
+  text-align: left;
+  margin: 20px;
+}
+
+
+.input {
+  width: 710px;
+  height: 33px;
+  background: rgba(255,255,255,1);
+  position: relative;
+  top: 1px;
+  left: 80px;
+  border: 1px solid rgba(197,197,197,1);
+  overflow: hidden;
+}
+.photo {
+  width: 165px;
+  height: 165px;
+  background: url("../images/v2_100.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: 1;
+  position: relative;
+  top: 10px;
+  left: 10px;
+  margin: 10px;
+  overflow: hidden;
+}
+.line {
+  width: 891px;
+  opacity: 1;
+  position: relative;
+  top: 20px;
+  left: 0px;
+  border: 0.5px solid rgba(77,77,77,1);
+}
+.button {
+  height: 33px;
+  background: rgba(244,244,244,1);
+  position: relative;
+  top: 4px;
+  left: 80px;
+}

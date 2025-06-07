@@ -1,0 +1,144 @@
+.wapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.test-section {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.hidden-element {
+    opacity: 0;
+    position: absolute;
+    z-index: 1001;
+}
+.sensitive-form {
+    margin: 20px 0;
+}
+iframe {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #ccc;
+}
+#log-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    height: 520px;
+    width: 350px;
+    overflow-y: auto;
+    
+}
+
+@font-face {
+    font-family: 'Freesentation-5Medium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-5Medium.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Freesentation-7Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-7Bold.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+body {
+  background: 
+    radial-gradient(circle at 20% 30%, #ffafb2, transparent 40%),
+    radial-gradient(circle at 70% 40%, #fad0c4, transparent 40%),
+    radial-gradient(circle at 30% 80%, #fbc2eb, transparent 40%),
+    radial-gradient(circle at 80% 70%, #b4bdff, transparent 40%);
+
+  background-blend-mode: screen;
+  height: 100%;
+  margin: 0;
+}
+
+h1 {
+    font-family: GangwonEduAll;
+    margin-left: 30px;
+}
+h2 {
+    font-family: Freesentation-7Bold;
+}
+button, div, label {
+    font-family: Freesentation-5Medium;
+    margin-bottom: 10px;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+.test-section {
+    flex: 1;
+  position: relative;
+  margin-right: 20px;
+  padding: 10px 25px;
+  background: transparent;
+  border-radius: 1rem;
+  box-shadow: 1px 1px 0.5px -5px rgba(0, 0, 0, 0.05),
+    1.8px 1.8px 1.8px -5px rgba(0, 0, 0, 0.03),
+    2.9px 2.8px 4.4px -5px rgba(0, 0, 0, 0.022),
+    5.2px 5.1px 9.4px -5px rgba(0, 0, 0, 0.018),
+    12.5px 12.2px 19.3px -5px rgba(0, 0, 0, 0.015),
+    48px 47px 47px -5px rgba(0, 0, 0, 0.012);
+
+  &::before {
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #f9f9fb;
+    mix-blend-mode: soft-light;
+    border-radius: 1rem;
+    z-index: -1;
+  }
+}
+
+#log-container {
+  flex: 1;
+  margin-right: 20px;
+  padding: 10px 25px;
+  background: rgba(255, 255, 255, 0.363); 
+  border-radius: 1rem;
+
+  box-shadow: 1px 1px 0.5px -5px rgba(0, 0, 0, 0.05),
+    1.8px 1.8px 1.8px -5px rgba(0, 0, 0, 0.03),
+    2.9px 2.8px 4.4px -5px rgba(0, 0, 0, 0.022),
+    5.2px 5.1px 9.4px -5px rgba(0, 0, 0, 0.018),
+    12.5px 12.2px 19.3px -5px rgba(0, 0, 0, 0.015),
+    48px 47px 47px -5px rgba(0, 0, 0, 0.012);
+  position: fixed;
+  z-index: 1000;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.05); 
+    z-index: -1;
+  }
+}
+
+.left {
+  width: 66.66%;
+  padding: 20px;
+}
+
+.right {
+  width: 33.33%;
+  padding: 20px;
+}
+

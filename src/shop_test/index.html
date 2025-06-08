@@ -169,4 +169,14 @@
     finalField.textContent = finalPrice.toLocaleString() + "원";
     payButton.textContent = finalPrice.toLocaleString() + "원 결제하기";
     });
+
+
+    document.getElementById("payButton").addEventListener("click", function(event) {
+        event.preventDefault();
+        if (!document.getElementById("agree").checked) {
+            alert("개인정보 수집 및 이용 동의에 체크해주세요.");
+            return;
+        }
+        alert("결제가 완료되었습니다.");
+    });
 </script>

@@ -35,6 +35,10 @@ class DOMTracker {
     this.records.push(record);
     console.log(`[DOM RECORD] ${JSON.stringify(record)}`);
     
+    // alert로 감지 내용 표시
+    const alertMessage = `[DOM 변경 감지]\n유형: ${record.type}\n요소: ${record.element || 'N/A'}\n선택자: ${record.selector || 'N/A'}\n시간: ${new Date(timestamp).toLocaleString()}`;
+    alert(alertMessage);
+    
     // 서버로 전송 또는 로컬 저장
     this.saveRecord(record);
   }

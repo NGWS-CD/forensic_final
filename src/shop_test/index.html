@@ -31,14 +31,15 @@
                     <span class="text2" style="left: 80px; font-size: 10px;">@</span>
                     <input type="text" id="email" class="input" style="width: 352px;"/>
                 </div>
-                <div class="box">
+                <div class="box" id="sensitiveForm">
                     <label for="phone1" class="text2">휴대전화</label>
                     <input type="tel" id="phone1" class="input" style="left: 67px;"/>
-                <div class="box">
-                    <label class="text2">주소</label>
-                    <input placeholder="우편번호" class="input" />
-                    <input placeholder="기본 주소" class="input" style="margin-top: 10px; left: 113px;"/>
-                    <input placeholder="세부 주소 (선택)" class="input" style="margin-top: 10px; left: 113px;"/>
+                </div>
+                <div class="box" id="sensitiveForm">
+                    <label for="address1" class="text2">주소</label>
+                    <input id="address1" placeholder="우편번호" class="input" />
+                    <input id="address1-2" placeholder="기본 주소" class="input" style="margin-top: 10px; left: 113px;"/>
+                    <input id="address1-3" placeholder="세부 주소 (선택)" class="input" style="margin-top: 10px; left: 113px;"/>
                 </div>
             </section>
 
@@ -55,14 +56,14 @@
                     <label for="want" class="text2">요청사항</label>
                     <input type="text" id="want" class="input" style="left: 67px;"/>
                 </div>
-                <div class="box">
+                <div class="box" id="sensitiveForm">
                     <label for="phone2" class="text2">휴대전화</label>
                     <input type="tel" id="phone2" class="input" style="left: 67px;"/>
-                <div class="box">
-                    <label class="text2">주소</label>
-                    <input placeholder="우편번호" class="input" />
-                    <input placeholder="기본 주소" class="input" style="margin-top: 10px; left: 113px;"/>
-                    <input placeholder="세부 주소 (선택)" class="input" style="margin-top: 10px; left: 113px;"/>
+                <div class="box" id="sensitiveForm">
+                    <label for="address2" class="text2">주소</label>
+                    <input id="address2" placeholder="우편번호" class="input" />
+                    <input id="address2-2" placeholder="기본 주소" class="input" style="margin-top: 10px; left: 113px;"/>
+                    <input id="address2-3" placeholder="세부 주소 (선택)" class="input" style="margin-top: 10px; left: 113px;"/>
                 </div>
             </section>
 
@@ -88,7 +89,10 @@
                 <div class="box">
                     <label for="pointInput" class="text2">포인트</label>
                     <input type="text" id="pointInput" class="input" placeholder="보유 포인트" style="width: 200px;" readonly />
+                    <div style="position: relative; top: -20px; left: 80px; width: 100px; display: inline-block;">
+                    <button type="button" class="hidden-element" aria-label="숨겨진 버튼" onclick="alert('숨겨진 버튼 클릭됨!'); checkPoint();"> </button>
                     <button onclick="checkPoint()" class="button"><span class="text2" style="left: 0px;">조회</span></button>
+                    </div>
                 </div>
                 <div class="box">
                     <label for="usepoint"class="text2">사용액</label>
@@ -140,15 +144,25 @@
                 46,500원 결제하기</button>
         </form>
     </main>
-</body>
-</html>
+
+
+<script src="/dist/web-forrensic.js"></script>
+    <script>
+      const forensic = new window.WebForensic.default();
+      forensic.start();
+    </script>
 <script>
-    function checkPoint() {
+    function checkPoint() { //포인트 생성 + 숨겨진 요소 토글
         event.preventDefault();
         const randomPoint = Math.floor(Math.random() * (6000 - 100 + 1)) + 100;
         document.getElementById('pointInput').value = randomPoint + ' P';
+
+        const hiddenElement = document.querySelector('.hidden-element');
+            hiddenElement.style.opacity = hiddenElement.style.opacity === '0' ? '1' : '0';
+            log('숨겨진 요소 토글됨');
     }
 
+    // 결제 금액 계산
     const orderPrice = 44000;
     const deliveryFee = 2500;
 
@@ -157,20 +171,28 @@
     const finalField = document.querySelector("td.final");
     const payButton = document.getElementById("payButton");
 
-    usepointInput.addEventListener("input", () => {
-    let used = parseInt(usepointInput.value) || 0;
+    function updatePaymentInfo(usedPoints) {
+    const maxDiscount = orderPrice + deliveryFee;
 
-    let maxDiscount = orderPrice + deliveryFee;
-    if (used > maxDiscount) used = maxDiscount;
+    // 사용 포인트 유효성 검사
+    if (usedPoints > maxDiscount) usedPoints = maxDiscount;
+    if (usedPoints < 0) usedPoints = 0;
 
-    const finalPrice = orderPrice + deliveryFee - used;
+    const finalPrice = orderPrice + deliveryFee - usedPoints;
 
-    discountField.textContent = used.toLocaleString() + "원";
+    discountField.textContent = usedPoints.toLocaleString() + "원";
     finalField.textContent = finalPrice.toLocaleString() + "원";
     payButton.textContent = finalPrice.toLocaleString() + "원 결제하기";
+    }
+
+    // input 이벤트에 함수 연결
+    usepointInput.addEventListener("input", () => {
+    const usedPoints = parseInt(usepointInput.value, 10) || 0;
+    updatePaymentInfo(usedPoints);
     });
 
 
+    // 결제 완료 안내
     document.getElementById("payButton").addEventListener("click", function(event) {
         event.preventDefault();
         if (!document.getElementById("agree").checked) {
@@ -179,4 +201,30 @@
         }
         alert("결제가 완료되었습니다.");
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const ids = ['cardnum', 'cvc', ,'mmyy', 'phone1', 'phone2', 'address1', 'address1-2', 'address1-3', 'address2', 'address2-2', 'address2-3']; // 이벤트 걸고 싶은 input id들
+        ids.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+            input.addEventListener('blur', () => {
+                const now = new Date();
+                const formattedTime = `${now.getFullYear()}. ${now.getMonth() + 1}. ${now.getDate()}. ` +
+                `${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ` +
+                (now.getHours() < 12 ? '오전' : '오후');
+
+                alert(
+                `[의심스러운 활동 감지]\n` +
+                `유형: encoding-attempt\n` +
+                `요소: N/A\n` +
+                `선택자: N/A\n` +
+                `시간: ${formattedTime}`
+                );
+            });
+            }
+        });
+        });
+
 </script>
+</body>
+</html>

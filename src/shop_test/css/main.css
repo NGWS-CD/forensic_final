@@ -190,7 +190,16 @@ body {
 .button {
   height: 33px;
   background: rgba(244,244,244,1);
-  position: relative;
-  top: 4px;
-  left: 80px;
+  position: absolute;
+}
+.hidden-element {
+    position: absolute;
+    z-index: 1001;
+  height: 33px;
+  opacity: 0;
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+  outline: none;
+  width: 45px;
 }

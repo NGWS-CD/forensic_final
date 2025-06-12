@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>session recording & replay test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .control-section {
+            margin-bottom: 20px;
+        }
+
+        .control-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1s infinite;
+        }
+
+        .status-recording {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .status-replaying {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .status-stopped {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .info-panel {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .speed-control input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .speed-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        .speed-value {
+            min-width: 60px;
+            text-align: center;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .test-area {
+            padding: 30px;
+            background: white;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .test-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .test-section input,
+        .test-section textarea,
+        .test-section select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .test-section input:focus,
+        .test-section textarea:focus,
+        .test-section select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .test-section button {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .test-section button:hover {
+            background: #5a6fd8;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+
+        .log-entry.info { color: #00ff00; }
+        .log-entry.warn { color: #ffff00; }
+        .log-entry.error { color: #ff0000; }
+        .log-entry.debug { color: #888888; }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>session recording  & replay test</h1>
+            <p>사용자의 모든 웹 페이지 상호작용을 기록하고 재현하는 기능을 테스트</p>
+        </div>
+
+        <div class="controls">
+            <!-- 리코딩 컨트롤 -->
+            <div class="control-section">
+                <h3>📹 세션 리코딩</h3>
+                <div class="control-group">
+                    <button id="startRecording" class="btn btn-primary">
+                        <span class="status-indicator status-stopped"></span>
+                        기록 시작
+                    </button>
+                    <button id="stopRecording" class="btn btn-danger" disabled>기록 중지</button>
+                    <button id="saveSession" class="btn btn-success" disabled>세션 저장</button>
+                    <button id="clearSession" class="btn btn-secondary" disabled>기록 삭제</button>
+                </div>
+                <div class="info-panel" id="recordingInfo">
+                    세션 정보가 여기에 표시됩니다.
+                </div>
+            </div>
+
+            <!-- 재생 컨트롤 -->
+            <div class="control-section">
+                <h3>▶️ 세션 재생</h3>
+                <div class="control-group">
+                    <input type="file" id="sessionFile" class="file-input" accept=".json">
+                    <label for="sessionFile" class="file-label">세션 파일 선택</label>
+                    <button id="startReplay" class="btn btn-success" disabled>재생 시작</button>
+                    <button id="pauseReplay" class="btn btn-warning" disabled>일시정지</button>
+                    <button id="stopReplay" class="btn btn-danger" disabled>재생 중지</button>
+                </div>
+                
+                <div class="speed-control">
+                    <label>재생 속도:</label>
+                    <input type="range" id="replaySpeed" min="0.1" max="3.0" step="0.1" value="1.0">
+                    <span class="speed-value" id="speedValue">1.0x</span>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div class="info-panel" id="replayInfo">
+                    재생 정보가 여기에 표시됩니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="test-area">
+            <div class="test-section">
+                <h3>🖱️ 마우스 상호작용 테스트</h3>
+                <div id="mouseArea" style="width: 200px; height: 100px; background: #f0f0f0; border: 2px dashed #ccc; margin: 10px 0; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    마우스 영역 (클릭)
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>⌨️ 키보드 상호작용 테스트</h3>
+                <input type="text" id="keyboardInput" placeholder="키보드 입력을 테스트해보세요">
+                <textarea id="keyboardTextarea" placeholder="여러 줄 텍스트 입력 테스트" rows="3"></textarea>
+                <select id="keyboardSelect">
+                    <option value="">선택하세요</option>
+                    <option value="option1">옵션 1</option>
+                    <option value="option2">옵션 2</option>
+                    <option value="option3">옵션 3</option>
+                </select>
+            </div>
+
+            <div class="test-section">
+                <h3>📝 폼 상호작용 테스트</h3>
+                <form id="testForm">
+                    <input type="text" name="username" placeholder="사용자명">
+                    <input type="password" name="password" placeholder="비밀번호">
+                    <input type="email" name="email" placeholder="이메일">
+                    <input type="tel" name="phone" placeholder="전화번호">
+                    <button type="submit">폼 제출</button>
+                </form>
+            </div>
+
+            <div class="test-section">
+                <h3>📜 스크롤 테스트</h3>
+                <p><strong>테스트 방법:</strong></p>
+                <ol style="margin: 10px 0; padding-left: 20px;">
+                    <li>아래 스크롤 영역에서 마우스 휠을 사용하여 스크롤</li>
+                    <li>페이지 전체도 스크롤 (브라우저 창에서)</li>
+                </ol>
+                <p>아래 영역에서 마우스 휠을 사용하여 스크롤을 테스트</p>
+                <div id="scrollTestArea" style="height: 400px; overflow-y: auto; border: 2px solid #ddd; padding: 20px; background: #f9f9f9;">
+                    <h4>스크롤 테스트 영역</h4>
+                    <p>이 영역은 스크롤 테스트를 위한 긴 콘텐츠</p>
+                    <p>마우스 휠을 사용하여 위아래로 스크롤</p>
+                    <p>스크롤 동작이 기록되고 재생 시 정확히 재현되는지 확인 가능능</p>
+                    
+                    <div style="height: 200px; background: linear-gradient(to bottom, #ff6b6b, #4ecdc4); margin: 20px 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        스크롤 테스트 섹션 1
+                    </div>
+                    
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    
+                    <div style="height: 200px; background: linear-gradient(to bottom, #a8edea, #fed6e3); margin: 20px 0; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">
+                        스크롤 테스트 섹션 2
+                    </div>
+                    
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    
+                    <div style="height: 200px; background: linear-gradient(to bottom, #ffecd2, #fcb69f); margin: 20px 0; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">
+                        스크롤 테스트 섹션 3
+                    </div>
+                    
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                    
+                    <div style="height: 200px; background: linear-gradient(to bottom, #667eea, #764ba2); margin: 20px 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        스크롤 테스트 섹션 4
+                    </div>
+                    
+                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+                    <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+                    
+                    <div style="height: 200px; background: linear-gradient(to bottom, #f093fb, #f5576c); margin: 20px 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        스크롤 테스트 섹션 5 (마지막)
+                    </div>
+                    
+                    <p>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+                    <p>Vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+                </div>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    💡 팁: 스크롤 테스팅
+                </p>
+            </div>
+
+            <div class="test-section">
+                <h3>📊 로그</h3>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry info">세션 리리코딩 & 재생 테스트 페이지가 로드되었습니다.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 세션 리리코딩 모듈 -->
+    <script>
+        // 모듈 로딩 확인
+        console.log('스크립트 로딩 시작...');
+    </script>
+    <script src="/src/record.js"></script>
+    <script>
+        console.log('record.js 로딩 완료, SessionRecorder:', typeof SessionRecorder);
+    </script>
+    <!-- 세션 재생 모듈 -->
+    <script src="/src/replay.js"></script>
+    <script>
+        console.log('replay.js 로딩 완료, SessionReplayer:', typeof SessionReplayer);
+    </script>
+
+    <script>
+        // 전역 변수
+        let recorder = null;
+        let replayer = null;
+
+        // DOM 요소 참조
+        const startRecordingBtn = document.getElementById('startRecording');
+        const stopRecordingBtn = document.getElementById('stopRecording');
+        const saveSessionBtn = document.getElementById('saveSession');
+        const clearSessionBtn = document.getElementById('clearSession');
+        const sessionFile = document.getElementById('sessionFile');
+        const startReplayBtn = document.getElementById('startReplay');
+        const pauseReplayBtn = document.getElementById('pauseReplay');
+        const stopReplayBtn = document.getElementById('stopReplay');
+        const replaySpeedSlider = document.getElementById('replaySpeed');
+        const speedValue = document.getElementById('speedValue');
+        const recordingInfo = document.getElementById('recordingInfo');
+        const replayInfo = document.getElementById('replayInfo');
+        const progressFill = document.getElementById('progressFill');
+
+        // 초기화
+        function initialize() {
+            log('초기화 시작...', 'debug');
+            
+            // SessionRecorder 클래스 확인
+            if (typeof SessionRecorder === 'undefined') {
+                log('SessionRecorder 클래스를 찾을 수 없습니다!', 'error');
+                return;
+            }
+            
+            // SessionReplayer 클래스 확인
+            if (typeof SessionReplayer === 'undefined') {
+                log('SessionReplayer 클래스를 찾을 수 없습니다!', 'error');
+                return;
+            }
+
+            try {
+                // 레코더 초기화
+                recorder = new SessionRecorder({
+                    recordMouse: true,
+                    recordKeyboard: true,
+                    recordScroll: true,
+                    recordResize: true,
+                    recordNavigation: true,
+                    recordFormInputs: true,
+                    recordClicks: true,
+                    maskSensitiveData: true,
+                    logLevel: 'debug'
+                });
+
+                // 재생기 초기화
+                replayer = new SessionReplayer({
+                    speed: 1.0,
+                    showProgress: true,
+                    logLevel: 'debug'
+                });
+
+                // 재생 진행률 콜백 설정
+                replayer.onProgress((status) => {
+                    if (status === 'complete') {
+                        log('재생이 완료되었습니다.', 'info');
+                    }
+                });
+
+                log('세션 리리코딩 & 재생 모듈이 초기화되었습니다.', 'info');
+                log('SessionRecorder 클래스 확인: ' + (typeof SessionRecorder), 'debug');
+                log('SessionReplayer 클래스 확인: ' + (typeof SessionReplayer), 'debug');
+                log('recorder 객체 확인: ' + (recorder ? '성공' : '실패'), 'debug');
+                log('replayer 객체 확인: ' + (replayer ? '성공' : '실패'), 'debug');
+                
+                updateRecordingInfo();
+                updateReplayInfo();
+            } catch (error) {
+                log('초기화 중 오류 발생: ' + error.message, 'error');
+                console.error('Initialization error:', error);
+            }
+        }
+
+        // 로그 출력
+        function log(message, level = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${level}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // 콘솔에도 출력
+            console.log(`[${level.toUpperCase()}] ${message}`);
+        }
+
+        // 레코딩 정보 업데이트
+        function updateRecordingInfo() {
+            if (recorder) {
+                const info = recorder.getSessionInfo();
+                recordingInfo.innerHTML = `
+                    세션 ID: ${info.sessionId || 'N/A'}<br>
+                    기록 상태: ${info.isRecording ? '🟢 기록 중' : '🔴 중지됨'}<br>
+                    총 이벤트: ${info.totalEvents}개<br>
+                    기록 시간: ${info.duration ? Math.round(info.duration / 1000) : 0}초<br>
+                    페이지: ${info.pageInfo?.url || 'N/A'}
+                `;
+            } else {
+                recordingInfo.innerHTML = '레코더가 초기화되지 않았습니다.';
+            }
+        }
+
+        // 재생 정보 업데이트
+        function updateReplayInfo() {
+            if (replayer) {
+                const status = replayer.getReplayStatus();
+                const progress = status.progress;
+                
+                progressFill.style.width = `${progress}%`;
+                
+                replayInfo.innerHTML = `
+                    재생 상태: ${status.isReplaying ? '🟡 재생 중' : '⚪ 중지됨'}<br>
+                    일시정지: ${status.isPaused ? '예' : '아니오'}<br>
+                    진행률: ${progress.toFixed(1)}%<br>
+                    이벤트: ${status.currentIndex + 1}/${status.totalEvents}<br>
+                    속도: ${status.speed}x
+                `;
+            } else {
+                replayInfo.innerHTML = '재생기가 초기화되지 않았습니다.';
+            }
+        }
+
+        // 버튼 상태 업데이트
+        function updateButtonStates() {
+            if (recorder) {
+                const info = recorder.getSessionInfo();
+                startRecordingBtn.disabled = info.isRecording;
+                stopRecordingBtn.disabled = !info.isRecording;
+                saveSessionBtn.disabled = info.totalEvents === 0;
+                clearSessionBtn.disabled = info.totalEvents === 0;
+            } else {
+                startRecordingBtn.disabled = true;
+                stopRecordingBtn.disabled = true;
+                saveSessionBtn.disabled = true;
+                clearSessionBtn.disabled = true;
+            }
+
+            if (replayer) {
+                const status = replayer.getReplayStatus();
+                startReplayBtn.disabled = status.totalEvents === 0 || status.isReplaying;
+                pauseReplayBtn.disabled = !status.isReplaying;
+                stopReplayBtn.disabled = !status.isReplaying;
+            } else {
+                startReplayBtn.disabled = true;
+                pauseReplayBtn.disabled = true;
+                stopReplayBtn.disabled = true;
+            }
+        }
+
+        // 상태 표시 업데이트
+        function updateStatusIndicators() {
+            if (recorder) {
+                const info = recorder.getSessionInfo();
+                const indicator = startRecordingBtn.querySelector('.status-indicator');
+                indicator.className = 'status-indicator';
+                
+                if (info.isRecording) {
+                    indicator.classList.add('status-recording');
+                } else {
+                    indicator.classList.add('status-stopped');
+                }
+            }
+        }
+
+        // 주기적 업데이트
+        setInterval(() => {
+            updateRecordingInfo();
+            updateReplayInfo();
+            updateButtonStates();
+            updateStatusIndicators();
+        }, 1000);
+
+        // 이벤트 리스너
+        startRecordingBtn.addEventListener('click', () => {
+            if (!recorder) {
+                log('레코더가 초기화되지 않았습니다. 페이지를 새로고침해주세요.', 'error');
+                return;
+            }
+            
+            try {
+                recorder.startRecording();
+                log('세션 기록을 시작했습니다.', 'info');
+                log('레코더 상태: ' + JSON.stringify(recorder.getSessionInfo()), 'debug');
+            } catch (error) {
+                log('세션 기록 시작 실패: ' + error.message, 'error');
+                console.error('Recording start error:', error);
+            }
+        });
+
+        stopRecordingBtn.addEventListener('click', () => {
+            if (!recorder) {
+                log('레코더가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            try {
+                const records = recorder.stopRecording();
+                if (records && Array.isArray(records)) {
+                    log(`세션 기록을 중지했습니다. 총 ${records.length}개 이벤트가 기록되었습니다.`, 'info');
+                    log('기록된 이벤트: ' + JSON.stringify(records.slice(0, 3)), 'debug');
+                } else {
+                    log('세션 기록을 중지했습니다. (기록된 이벤트 없음)', 'info');
+                }
+            } catch (error) {
+                log('세션 기록 중지 실패: ' + error.message, 'error');
+                console.error('Recording stop error:', error);
+            }
+        });
+
+        saveSessionBtn.addEventListener('click', () => {
+            if (!recorder) {
+                log('레코더가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            try {
+                recorder.saveSession();
+                log('세션을 파일로 저장했습니다.', 'info');
+            } catch (error) {
+                log('세션 저장 실패: ' + error.message, 'error');
+                console.error('Session save error:', error);
+            }
+        });
+
+        clearSessionBtn.addEventListener('click', () => {
+            if (!recorder) {
+                log('레코더가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            if (confirm('모든 세션 기록을 삭제하시겠습니까?')) {
+                try {
+                    recorder.clearRecords();
+                    log('세션 기록을 삭제했습니다.', 'warn');
+                } catch (error) {
+                    log('세션 기록 삭제 실패: ' + error.message, 'error');
+                    console.error('Clear records error:', error);
+                }
+            }
+        });
+
+        sessionFile.addEventListener('change', (event) => {
+            if (!replayer) {
+                log('재생기가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            const file = event.target.files[0];
+            if (file) {
+                replayer.loadSessionFromFile(file)
+                    .then((sessionData) => {
+                        log(`세션 파일을 로드했습니다: ${file.name}`, 'info');
+                        log(`총 ${sessionData.events.length}개 이벤트가 로드되었습니다.`, 'info');
+                    })
+                    .catch((error) => {
+                        log(`세션 파일 로드 실패: ${error.message}`, 'error');
+                        console.error('Session load error:', error);
+                    });
+            }
+        });
+
+        startReplayBtn.addEventListener('click', () => {
+            if (!replayer) {
+                log('재생기가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            try {
+                const speed = parseFloat(replaySpeedSlider.value);
+                replayer.startReplay(speed);
+                log(`세션 재생을 시작했습니다. (속도: ${speed}x)`, 'info');
+            } catch (error) {
+                log('세션 재생 시작 실패: ' + error.message, 'error');
+                console.error('Replay start error:', error);
+            }
+        });
+
+        pauseReplayBtn.addEventListener('click', () => {
+            if (!replayer) {
+                log('재생기가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            try {
+                replayer.togglePause();
+                log('세션 재생을 일시정지/재개했습니다.', 'info');
+            } catch (error) {
+                log('세션 재생 일시정지/재개 실패: ' + error.message, 'error');
+                console.error('Replay pause error:', error);
+            }
+        });
+
+        stopReplayBtn.addEventListener('click', () => {
+            if (!replayer) {
+                log('재생기가 초기화되지 않았습니다.', 'error');
+                return;
+            }
+            
+            try {
+                replayer.stopReplay();
+                log('세션 재생을 중지했습니다.', 'info');
+            } catch (error) {
+                log('세션 재생 중지 실패: ' + error.message, 'error');
+                console.error('Replay stop error:', error);
+            }
+        });
+
+        replaySpeedSlider.addEventListener('input', () => {
+            const speed = replaySpeedSlider.value;
+            speedValue.textContent = speed + 'x';
+            if (replayer) {
+                replayer.setSpeed(parseFloat(speed));
+            }
+        });
+
+        // 테스트 함수들
+        function testClick() {
+            log('클릭 테스트 버튼이 클릭되었습니다.', 'debug');
+        }
+
+        function testDoubleClick() {
+            log('더블클릭 테스트 버튼이 클릭되었습니다.', 'debug');
+        }
+
+        function testRightClick() {
+            log('우클릭 테스트 버튼이 클릭되었습니다.', 'debug');
+        }
+
+        function complexInteraction() {
+            const output = document.getElementById('complexOutput');
+            
+            // 복합 상호작용 시뮬레이션
+            output.textContent = '복합 상호작용 시작...';
+            
+            setTimeout(() => {
+                const input = document.getElementById('keyboardInput');
+                input.focus();
+                input.value = '복합 테스트 입력';
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                setTimeout(() => {
+                    output.textContent = '복합 상호작용 완료! 여러 단계의 상호작용이 수행되었습니다.';
+                    log('복합 상호작용 테스트가 완료되었습니다.', 'info');
+                }, 500);
+            }, 300);
+        }
+
+        // 폼 제출 이벤트
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            log('폼이 제출되었습니다: ' + JSON.stringify(data), 'info');
+        });
+
+        // 마우스 영역 클릭 이벤트
+        document.getElementById('mouseArea').addEventListener('click', function(e) {
+            log(`마우스 영역 클릭: x=${e.clientX}, y=${e.clientY}`, 'debug');
+        });
+
+        // 마우스 영역 더블클릭 이벤트
+        document.getElementById('mouseArea').addEventListener('dblclick', function(e) {
+            log(`마우스 영역 더블클릭: x=${e.clientX}, y=${e.clientY}`, 'debug');
+        });
+
+        // 마우스 영역 우클릭 이벤트
+        document.getElementById('mouseArea').addEventListener('contextmenu', function(e) {
+            log(`마우스 영역 우클릭: x=${e.clientX}, y=${e.clientY}`, 'debug');
+        });
+
+        // 마우스 영역 마우스다운 이벤트
+        document.getElementById('mouseArea').addEventListener('mousedown', function(e) {
+            log(`마우스 영역 마우스다운: x=${e.clientX}, y=${e.clientY}, button=${e.button}`, 'debug');
+        });
+
+        // 마우스 영역 마우스업 이벤트
+        document.getElementById('mouseArea').addEventListener('mouseup', function(e) {
+            log(`마우스 영역 마우스업: x=${e.clientX}, y=${e.clientY}, button=${e.button}`, 'debug');
+        });
+
+        // 키보드 입력 이벤트 추가
+        document.getElementById('keyboardInput').addEventListener('input', function(e) {
+            log(`키보드 입력: ${e.target.value}`, 'debug');
+        });
+
+        document.getElementById('keyboardTextarea').addEventListener('input', function(e) {
+            log(`텍스트영역 입력: ${e.target.value}`, 'debug');
+        });
+
+        document.getElementById('keyboardSelect').addEventListener('change', function(e) {
+            log(`선택박스 변경: ${e.target.value}`, 'debug');
+        });
+
+        // 스크롤 테스트 영역 이벤트
+        document.getElementById('scrollTestArea').addEventListener('scroll', function(e) {
+            log(`스크롤 테스트 영역 스크롤: scrollTop=${e.target.scrollTop}, scrollHeight=${e.target.scrollHeight}`, 'debug');
+        });
+
+        document.getElementById('scrollTestArea').addEventListener('wheel', function(e) {
+            log(`스크롤 테스트 영역 휠: deltaY=${e.deltaY}, deltaMode=${e.deltaMode}`, 'debug');
+        });
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', initialize);
+    </script>
+</body>
+</html> 

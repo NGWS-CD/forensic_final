@@ -6,6 +6,9 @@ const port = 3000;
 // dist 폴더 정적 서빙 추가
 app.use('/dist', express.static(path.join(__dirname, '../../dist')));
 
+// src 폴더 정적 서빙 추가
+app.use('/src', express.static(path.join(__dirname, '..')));
+
 // 기존 정적 파일 서빙
 app.use(express.static(path.join(__dirname)));
 
